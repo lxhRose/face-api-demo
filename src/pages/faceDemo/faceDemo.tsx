@@ -30,24 +30,38 @@ class FaceDemo extends React.PureComponent<Props, any> {
     constructor(props) {
         super(props);
         this.state = {
-            loading: false
+            loading: true,
+            text: '模块加载中'
         }
-    }
-    componentDidMount() {
-        document.title = "faceDemo";
-        this._detectSingleFace();
+        this.loadModels();
     }
 
-    _detectSingleFace = async () => {
-        this.setState({
-            loading: true
-        });
+    componentDidMount = () => {
+        document.title = "faceDemo";
+    }
+
+    loadModels = async () => {
         await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
         await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
         await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+        this.setState({
+            loading: false,
+            text: ''
+        });
+    }
 
+    pre_detectSingleFace = () => {
+        this.setState({
+            loading: true,
+            text: '人脸识别中'
+        });
+        setTimeout(()=> {
+            this._detectSingleFace();
+        }, 1);
+    }
+
+    _detectSingleFace = async () => {
         const input: any = document.getElementById('myImg');
-
         const detection = await faceapi.detectSingleFace(input);
         // const detections1 = await faceapi.detectAllFaces(input);
         // const fullFaceDescriptions = await faceapi.allFaces(input, 0.8);
@@ -56,7 +70,8 @@ class FaceDemo extends React.PureComponent<Props, any> {
         // console.log('fullFaceDescriptions', fullFaceDescriptions);
 
         this.setState({
-            loading: false
+            loading: false,
+            text: ''
         });
         if (detection) {
             Modal.success({title: '图中有人脸！'});
@@ -73,7 +88,7 @@ class FaceDemo extends React.PureComponent<Props, any> {
             let fr = new FileReader();  
             fr.onloadend = function(e) {  
                 myImg.src = e.target.result;  
-                that._detectSingleFace();
+                that.pre_detectSingleFace();
             };  
             fr.readAsDataURL(file);  //也是利用将图片作为url读出
         } 
@@ -83,7 +98,7 @@ class FaceDemo extends React.PureComponent<Props, any> {
         let myImg: any = document.getElementById("myImg");
         myImg.src = img;
         window.scrollTo(0,0); //回到顶部
-        this._detectSingleFace();
+        this.pre_detectSingleFace();
     }
 
 	render() {
@@ -98,12 +113,14 @@ class FaceDemo extends React.PureComponent<Props, any> {
                 <ul>
                     <li>选择下面图片试试：</li>
                     {IMG.map((img, index) => (
-                        <li onClick={() => this.choseImg(img)} style={{float: 'left', width: '50%', padding: '10px'}}>
+                        <li onClick={() => this.choseImg(img)}
+                        key={index}
+                         style={{float: 'left', width: '50%', padding: '10px'}}>
                             <img src={img} style={{width: '100%'}} />
                         </li>
                     ))}
                 </ul>
-                {this.state.loading && <Loading text="人脸识别中" />}
+                {this.state.loading && <Loading text={this.state.text} />}
             </div>
         )
 	}
