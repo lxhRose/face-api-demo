@@ -1,0 +1,32 @@
+{
+  "entry": "src/index.tsx",
+  "extraBabelPlugins": [
+    "transform-runtime",
+    "transform-decorators-legacy",
+    "transform-class-properties",
+    ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": true }]
+  ],
+  "disableCSSModules": true,
+  "env": {
+    "development": {
+      "extraBabelPlugins": [
+        "dva-hmr"
+      ]
+    },
+  "production": {
+    "extraBabelPlugins": [
+      "transform-runtime",
+      "transform-decorators-legacy",
+      ["import", { "libraryName": "antd", "style": true }]
+    ]
+  }
+  },
+ "proxy": {
+    "/": {
+    "target": "https://nh-officialaccount-web.ioht.link",
+    "changeOrigin": true
+    }
+  },
+  "ignoreMomentLocale": true,
+  "hash": false
+}
