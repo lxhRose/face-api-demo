@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from 'dva';
 import * as faceapi from 'face-api.js';
-import {Modal} from 'antd';
+import {Modal, Alert} from 'antd';
 import {Loading} from './../../components/index';
 import angry from './images/angry.jpg';
 import disgusted from './images/disgusted.jpg';
@@ -74,9 +74,9 @@ class FaceDemo extends React.PureComponent<Props, any> {
             text: ''
         });
         if (detection) {
-            Modal.success({title: '图中有人脸！'});
+            Modal.success({title: '人脸识别成功！'});
         } else {
-            Modal.error({title: '图中没有人脸！'});
+            Modal.error({title: '未识别人脸！'});
         }
     }
 
@@ -104,7 +104,8 @@ class FaceDemo extends React.PureComponent<Props, any> {
 	render() {
 		return (
             <div style={{textAlign: 'center'}}>
-                <img id="myImg" src={angry} style={{width: '100%'}} /><br/> 
+                <img id="myImg" src={angry} style={{width: '100%'}} />
+                <Alert message="温馨提示：光线充足识别率更高哦！" type="warning" />
                 <input type="file"
                  onChange={this.inputFileChange}
                   style={{padding: '20px 0'}}
